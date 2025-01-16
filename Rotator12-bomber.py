@@ -1,7 +1,3 @@
-#// Don't forget to hit SUBSCRIBE, COMMENT, LIKE, SHARE! and LEARN... :)
-# But srsly, hit that sub button so you don't miss out on more content! 
-
-
 '''imports'''
 import smtplib
 import sys
