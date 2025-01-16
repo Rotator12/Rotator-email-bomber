@@ -53,13 +53,14 @@ python email_bomber.py
         Optionally, add an attachment to the email.
 
     Once setup is complete, the script will begin sending the emails to the target.
-
+<br>
 Example
-
-+[+[+[ Email-Bomber v2.1 with Temp Mail API ]+]+]+
-+[+[+[ Ethical Use Only ]+]+]+
-...
-Enter target email <: victim@example.com <br>
+<br>
+<br>
++[+[+[ Email-Bomber v2.1 with Temp Mail API ]+]+]+<br>
++[+[+[ Ethical Use Only ]+]+]+<br>
+...<br>
+Enter target email <: victim@example.com   <br>
 Enter BOMB mode (1,2,3,4) || 1:(1000) 2:(500) 3:(250) 4:(custom) <: 1<br>
 You have selected BOMB mode: 1 and 1000 emails<br>
 Do you want to use a temporary email via API? (yes/no): yes<br>
