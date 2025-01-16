@@ -59,25 +59,28 @@ Example
 +[+[+[ Email-Bomber v2.1 with Temp Mail API ]+]+]+
 +[+[+[ Ethical Use Only ]+]+]+
 ...
-Enter target email <: victim@example.com
-Enter BOMB mode (1,2,3,4) || 1:(1000) 2:(500) 3:(250) 4:(custom) <: 1
-You have selected BOMB mode: 1 and 1000 emails
-Do you want to use a temporary email via API? (yes/no): yes
-Enter your Temp Mail API Key: **********
-Temporary email generated: example1234@temp-mail.org
-Enter subject <: Test Email Bomb
-Enter message <: This is a test message.
-Do you want to add an attachment? (yes/no): no
-
-Starting Attack...
-BOMB: 1
-BOMB: 2
-...
-Attack finished
-
+Enter target email <: victim@example.com <br>
+Enter BOMB mode (1,2,3,4) || 1:(1000) 2:(500) 3:(250) 4:(custom) <: 1<br>
+You have selected BOMB mode: 1 and 1000 emails<br>
+Do you want to use a temporary email via API? (yes/no): yes<br>
+Enter your Temp Mail API Key: **********<br>
+Temporary email generated: example1234@temp-mail.org<br>
+Enter subject <: Test Email Bomb<br>
+Enter message <: This is a test message.<br>
+Do you want to add an attachment? (yes/no): no<br>
+<br>
+Starting Attack...<br>
+BOMB: 1<br>
+BOMB: 2<br>
+...<br><br>
+Attack finished<br>
+<br>
+<br>
+<br>
 Disclaimer
-
-This script is for educational purposes only. Unauthorized use is prohibited. Do not use this tool to spam or harm others. Always get explicit permission before testing this script on any target.
+<br>
+This script is for educational purposes only. Unauthorized use is prohibited. Do not use this tool to spam or harm others. Always get explicit permission before testing this script on any target.<br>
+<br>
 License
-
+<br>
 This script is open-source and free to use for educational purposes. However, it comes with no warranty or guarantee. Use it responsibly and ethically
